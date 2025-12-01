@@ -1,7 +1,43 @@
+{% extends 'polls/base.html' %}
+
+{% block content %}
 <h1>{{ question.question_text }}</h1>
-<ul>
-    {% for choice in question.choice_set.all %}
-    <li>{{ choice.choice_text }} -- {{ choice.votes }} vote{{choice.votes|pluralize}}</li>
+
+{% if question.image %}
+    <img src="{{ question.image.url }}" alt="{{ question.question_text }}" style="max-width:100%; height:auto; margin:15px 0;">
+{% endif %}
+
+<h2>Результаты голосования</h2>
+
+<p><strong>Всего голосов:</strong> {{ total_votes }}</p>
+
+<div style="margin:20px 0;">
+    {% for choice_data in choices %}
+        <div style="margin:15px 0; padding:10px; background:#f8f9fa; border-radius:5px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="flex:1;">
+                    <strong>{{ choice_data.choice.choice_text }}</strong>
+                </div>
+                <div style="text-align:right;">
+                    <strong>{{ choice_data.choice.votes }} голосов ({{ choice_data.percentage }}%)</strong>
+                </div>
+            </div>
+            
+            <div style="margin-top:8px;">
+                <div style="background:#e9ecef; height:20px; border-radius:3px;">
+                    <div style="background:#3498db; height:100%; width:{{ choice_data.percentage }}%; border-radius:3px;"></div>
+                </div>
+            </div>
+        </div>
     {% endfor %}
-</ul>
-<a href="{% url 'polls:detail'  question.id %}">выбрать еще раз? </a>
+</div>
+
+<div style="margin-top:30px;">
+    <a href="{% url 'polls:detail' question.id %}" style="background:#6c757d; color:white; padding:10px 15px; text-decoration:none; border-radius:3px; margin-right:10px;">
+        Вернуться к опросу
+    </a>
+    <a href="{% url 'polls:index' %}" style="background:#3498db; color:white; padding:10px 15px; text-decoration:none; border-radius:3px;">
+        К списку опросов
+    </a>
+</div>
+{% endblock %}

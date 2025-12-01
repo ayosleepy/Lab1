@@ -1,14 +1,50 @@
-<form action="{% url 'polls:vote' question.id %}" method="post">
-    {% csrf_token %}
-    <fieldset>
-        <legend>
-            <h1>{{question.question_text}}</h1>
-        </legend>
-        {% if error_message %}<p><strong> {{error_message}}</strong></p>{% endif %}
+{% extends 'polls/base.html' %}
+
+{% block content %}
+<h1>{{ question.question_text }}</h1>
+
+{% if question.image %}
+    <img src="{{ question.image.url }}" alt="{{ question.question_text }}" style="max-width:100%; height:auto; margin:15px 0;">
+{% endif %}
+
+{% if question.description %}
+    <div style="background:#f8f9fa; padding:15px; margin:15px 0; border-radius:5px;">
+        <h3>Полное описание:</h3>
+        <p>{{ question.description }}</p>
+    </div>
+{% endif %}
+
+{% if not question.is_active %}
+    <div style="background:#f8d7da; color:#721c24; padding:10px; margin:15px 0; border-radius:5px;">
+        <strong>Этот опрос завершен!</strong> Голосование невозможно.
+    </div>
+{% endif %}
+
+{% if user_voted %}
+    <div style="background:#fff3cd; color:#856404; padding:10px; margin:15px 0; border-radius:5px;">
+        <strong>Вы уже голосовали в этом опросе!</strong>
+        <p><a href="{% url 'polls:results' question.id %}">Посмотреть результаты</a></p>
+    </div>
+{% elif question.is_active %}
+    <h3>Выберите вариант:</h3>
+    
+    <form action="{% url 'polls:vote' question.id %}" method="post">
+        {% csrf_token %}
+        
         {% for choice in question.choice_set.all %}
-        <input type="radio" name="choice" id="choice{{forloop.counter}}" value="{{choice.id}}">
-        <label for="choice{{forloop.counter}}">{{choice.choice_text}}</label><br>
+            <div style="margin:10px 0; padding:10px; border:1px solid #ddd; border-radius:3px;">
+                <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
+                <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label>
+            </div>
         {% endfor %}
-    </fieldset>
-<input type="submit" value="Vote">
-</form>
+        
+        <button type="submit" style="background:#3498db; color:white; padding:10px 20px; border:none; border-radius:3px; cursor:pointer;">
+            Проголосовать
+        </button>
+    </form>
+{% endif %}
+
+<p style="margin-top:20px;">
+    <a href="{% url 'polls:index' %}">← Назад к списку опросов</a>
+</p>
+{% endblock %}
