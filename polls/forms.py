@@ -4,26 +4,55 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import UserProfile
 
 
-# Форма для регистрации нового пользователя
 class UserRegisterForm(UserCreationForm):
-    email = forms.EmailField(required=True)
+    email = forms.EmailField(required=True, label='Электронная почта')
+    avatar = forms.ImageField(required=True, label='Аватар', help_text='Обязательное поле')
 
     class Meta:
         model = User
         fields = ['username', 'email', 'password1', 'password2']
+        labels = {
+            'username': 'Имя пользователя',
+            'email': 'Электронная почта',
+            'password1': 'Пароль',
+            'password2': 'Подтверждение пароля',
+        }
+
+    def save(self, commit=True):
+        # Сохраняем пользователя
+        user = super().save(commit=commit)
+
+        # Получаем загруженный аватар
+        avatar = self.cleaned_data.get('avatar')
+
+        # Создаем профиль с аватаром
+        UserProfile.objects.create(user=user, avatar=avatar)
+
+        return user
 
 
-# Форма для обновления данных пользователя
 class UserUpdateForm(forms.ModelForm):
-    email = forms.EmailField()
+    email = forms.EmailField(label='Электронная почта')
 
     class Meta:
         model = User
         fields = ['username', 'email']
+        labels = {
+            'username': 'Имя пользователя',
+            'email': 'Электронная почта',
+        }
 
 
-# Форма для обновления профиля (аватар и др.)
 class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ['avatar', 'bio', 'birth_date']
+        labels = {
+            'avatar': 'Аватар',
+            'bio': 'О себе',
+            'birth_date': 'Дата рождения',
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['avatar'].required = True

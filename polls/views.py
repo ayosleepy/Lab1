@@ -102,9 +102,7 @@ def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            # Создаем профиль для нового пользователя
-            UserProfile.objects.create(user=user)
+            form.save()
             username = form.cleaned_data.get('username')
             messages.success(request, f'Аккаунт {username} был создан! Теперь можно войти.')
             return redirect('polls:login')
@@ -116,9 +114,15 @@ def register(request):
 # Представление для профиля
 @login_required
 def profile(request):
+    # Создаем профиль, если его нет (для старых пользователей)
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+
+    if created:
+        messages.info(request, 'Для вас создан профиль. Заполните информацию.')
+
     if request.method == 'POST':
         user_form = UserUpdateForm(request.POST, instance=request.user)
-        profile_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.userprofile)
+        profile_form = ProfileUpdateForm(request.POST, request.FILES, instance=user_profile)
 
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
@@ -127,15 +131,17 @@ def profile(request):
             return redirect('polls:profile')
     else:
         user_form = UserUpdateForm(instance=request.user)
-        profile_form = ProfileUpdateForm(instance=request.user.userprofile)
+        profile_form = ProfileUpdateForm(instance=user_profile)
 
     context = {
         'user_form': user_form,
-        'profile_form': profile_form
+        'profile_form': profile_form,
+        'user_profile': user_profile,
     }
     return render(request, 'polls/profile.html', context)
 
 
+# Удаление профиля
 @login_required
 def delete_profile(request):
     if request.method == 'POST':

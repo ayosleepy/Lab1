@@ -9,46 +9,35 @@
             padding: 0;
         }
         nav {
-            background: #2c3e50;
+            background: #333;
             padding: 15px;
         }
         nav a {
             color: white;
             text-decoration: none;
-            margin-right: 20px;
-            padding: 8px 12px;
+            margin-right: 15px;
         }
         nav a:hover {
-            background: #34495e;
-            border-radius: 4px;
+            text-decoration: underline;
         }
         .content {
             padding: 20px;
         }
         .alert {
-            background: #d4edda;
-            color: #155724;
-            padding: 12px;
-            margin-bottom: 15px;
-            border-radius: 4px;
+            background: #e7f3e7;
+            border: 1px solid #b7d9b7;
+            padding: 10px;
+            margin: 10px 0;
         }
-        form {
-            margin-top: 20px;
-        }
-        input, button {
-            padding: 8px;
-            margin: 5px 0;
-            display: block;
-        }
-        button {
-            background: #3498db;
-            color: white;
+        .logout-btn {
+            background: none;
             border: none;
-            padding: 10px 20px;
+            color: white;
+            text-decoration: underline;
             cursor: pointer;
-        }
-        button:hover {
-            background: #2980b9;
+            font: inherit;
+            padding: 0;
+            margin: 0;
         }
     </style>
 </head>
@@ -56,8 +45,12 @@
     <nav>
         <a href="/">Главная</a>
         {% if user.is_authenticated %}
+            <span style="color: white;">Привет, {{ user.username }}!</span>
             <a href="{% url 'polls:profile' %}">Профиль</a>
-            <a href="{% url 'polls:logout' %}">Выйти</a>
+            <form action="{% url 'polls:logout' %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="logout-btn">Выйти</button>
+            </form>
         {% else %}
             <a href="{% url 'polls:register' %}">Регистрация</a>
             <a href="{% url 'polls:login' %}">Войти</a>
