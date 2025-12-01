@@ -116,3 +116,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Настройки для медиа-файлов (аватары, изображения постов)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Настройки перенаправления после входа/выхода
+LOGIN_REDIRECT_URL = '/polls/'  # Куда перенаправлять после входа
+LOGOUT_REDIRECT_URL = '/'       # Куда перенаправлять после выхода
+LOGIN_URL = '/polls/login/'     # Где находится страница входа

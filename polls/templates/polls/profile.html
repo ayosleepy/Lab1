@@ -1,0 +1,18 @@
+{% extends 'polls/base.html' %}
+
+{% block content %}
+<h2>Профиль пользователя {{ user.username }}</h2>
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <h3>Основные данные</h3>
+    {{ user_form.as_p }}
+    <h3>Профиль</h3>
+    {{ profile_form.as_p }}
+    <button type="submit">Сохранить</button>
+</form>
+
+{% if user.userprofile.avatar %}
+    <h3>Текущий аватар:</h3>
+    <img src="{{ user.userprofile.avatar.url }}" width="100">
+{% endif %}
+{% endblock %}

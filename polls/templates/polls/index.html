@@ -1,12 +1,14 @@
-{% if latest_question_list %}
-<ul>
-    {% for question in latest_question_list %}
-    <li><a href="{% url 'polls:detail' question.id %}">{{question.question_text}}</a> </li>
-    {% endfor %}
-</ul>
-    {% else %}
-     <p>
-         Нет вопросов!
-     </p>
+{% extends 'polls/base.html' %}
 
+{% block content %}
+<h1>Добро пожаловать в систему опросов!</h1>
+<p>Здесь будут отображаться опросы.</p>
+
+{% if user.is_authenticated %}
+    <p>Вы вошли как: <strong>{{ user.username }}</strong></p>
+    <p><a href="{% url 'polls:profile' %}">Перейти в профиль</a></p>
+{% else %}
+    <p><a href="{% url 'polls:register' %}">Зарегистрироваться</a> или
+       <a href="{% url 'polls:login' %}">войти</a></p>
 {% endif %}
+{% endblock %}

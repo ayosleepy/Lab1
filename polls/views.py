@@ -1,15 +1,16 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Question, Choice
-from django.template import loader
 from django.urls import reverse
 from django.views import generic
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
+from .models import UserProfile
 
-
+def index(request):
+    return render(request, 'polls/index.html')
 # Представление для регистрации
 def register(request):
     if request.method == 'POST':
