@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from .models import Question, Choice, UserProfile
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
+from django.contrib.auth.models import User
 
 
 # Главная страница - список активных опросов
@@ -100,8 +101,13 @@ def results(request, question_id):
 # Представление для регистрации
 def register(request):
     if request.method == 'POST':
-        form = UserRegisterForm(request.POST)
+        form = UserRegisterForm(request.POST, request.FILES)
         if form.is_valid():
+            # Проверка на существующий email
+            email = form.cleaned_data.get('email')
+            if User.objects.filter(email=email).exists():
+                form.add_error('email', 'Пользователь с таким email уже существует.')
+                return render(request, 'polls/register.html', {'form': form})
             form.save()
             username = form.cleaned_data.get('username')
             messages.success(request, f'Аккаунт {username} был создан! Теперь можно войти.')

@@ -1,50 +1,63 @@
 {% extends 'polls/base.html' %}
 
 {% block content %}
-<h1>{{ question.question_text }}</h1>
+<div class="card">
+    <h2 style="margin-top: 0;">{{ question.question_text }}</h2>
 
-{% if question.image %}
-    <img src="{{ question.image.url }}" alt="{{ question.question_text }}" style="max-width:100%; height:auto; margin:15px 0;">
-{% endif %}
+    {% if question.image %}
+        <div style="text-align: center; margin: 15px 0;">
+            <img src="{{ question.image.url }}" style="max-width: 100%; max-height: 300px; border-radius: 4px;" alt="Изображение опроса">
+        </div>
+    {% endif %}
 
-{% if question.description %}
-    <div style="background:#f8f9fa; padding:15px; margin:15px 0; border-radius:5px;">
-        <h3>Полное описание:</h3>
-        <p>{{ question.description }}</p>
+    {% if question.description %}
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+            <h3 style="margin-top: 0;">Описание:</h3>
+            <p>{{ question.description }}</p>
+        </div>
+    {% endif %}
+
+    <div style="font-size: 14px; color: #666; margin-bottom: 20px;">
+        <div>Автор: {% if question.author %}{{ question.author.username }}{% else %}Неизвестен{% endif %}</div>
+        <div>Опубликован: {{ question.pub_date|date:"d.m.Y H:i" }}</div>
+        {% if question.end_date %}
+            <div>Завершится: {{ question.end_date|date:"d.m.Y H:i" }}</div>
+        {% endif %}
     </div>
-{% endif %}
 
-{% if not question.is_active %}
-    <div style="background:#f8d7da; color:#721c24; padding:10px; margin:15px 0; border-radius:5px;">
-        <strong>Этот опрос завершен!</strong> Голосование невозможно.
-    </div>
-{% endif %}
+    {% if not question.is_active %}
+        <div style="background: #fff3cd; color: #856404; padding: 10px; border-radius: 4px; margin-bottom: 20px;">
+            Этот опрос завершен. Голосование невозможно.
+        </div>
+    {% endif %}
 
-{% if user_voted %}
-    <div style="background:#fff3cd; color:#856404; padding:10px; margin:15px 0; border-radius:5px;">
-        <strong>Вы уже голосовали в этом опросе!</strong>
-        <p><a href="{% url 'polls:results' question.id %}">Посмотреть результаты</a></p>
-    </div>
-{% elif question.is_active %}
-    <h3>Выберите вариант:</h3>
-    
-    <form action="{% url 'polls:vote' question.id %}" method="post">
-        {% csrf_token %}
-        
-        {% for choice in question.choice_set.all %}
-            <div style="margin:10px 0; padding:10px; border:1px solid #ddd; border-radius:3px;">
-                <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
-                <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label>
+    {% if user_voted %}
+        <div style="background: #d1ecf1; color: #0c5460; padding: 10px; border-radius: 4px; margin-bottom: 20px;">
+            Вы уже голосовали в этом опросе.
+            <a href="{% url 'polls:results' question.id %}" style="display: block; margin-top: 5px;">Посмотреть результаты</a>
+        </div>
+    {% elif question.is_active %}
+        <h3>Выберите вариант:</h3>
+
+        <form action="{% url 'polls:vote' question.id %}" method="post">
+            {% csrf_token %}
+
+            {% for choice in question.choice_set.all %}
+                <div style="margin-bottom: 10px; padding: 10px; border: 1px solid #dee2e6; border-radius: 4px;">
+                    <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
+                    <label for="choice{{ forloop.counter }}" style="margin-left: 5px;">{{ choice.choice_text }}</label>
+                </div>
+            {% endfor %}
+
+            <div style="margin-top: 20px;">
+                <button type="submit" class="btn">Проголосовать</button>
             </div>
-        {% endfor %}
-        
-        <button type="submit" style="background:#3498db; color:white; padding:10px 20px; border:none; border-radius:3px; cursor:pointer;">
-            Проголосовать
-        </button>
-    </form>
-{% endif %}
+        </form>
+    {% endif %}
 
-<p style="margin-top:20px;">
-    <a href="{% url 'polls:index' %}">← Назад к списку опросов</a>
-</p>
+    <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #dee2e6;">
+        <a href="{% url 'polls:results' question.id %}" class="btn">Результаты</a>
+        <a href="{% url 'polls:index' %}" class="btn btn-secondary">Назад к опросам</a>
+    </div>
+</div>
 {% endblock %}

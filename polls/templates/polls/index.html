@@ -1,43 +1,41 @@
 {% extends 'polls/base.html' %}
 
 {% block content %}
-<h1>Актуальные опросы</h1>
+<div class="card">
+    <h2 style="margin-top: 0;">Активные опросы</h2>
 
-{% if questions %}
-    <div class="polls-list">
+    {% if questions %}
         {% for question in questions %}
-            <div class="poll-card" style="border:1px solid #ddd; padding:15px; margin:10px 0; border-radius:5px;">
-                <h3>{{ question.question_text }}</h3>
+            <div class="poll-item">
+                <h3 style="margin: 0 0 10px 0;">{{ question.question_text }}</h3>
 
                 {% if question.short_description %}
-                    <p><strong>Описание:</strong> {{ question.short_description }}</p>
+                    <p style="color: #666; margin: 5px 0;">{{ question.short_description }}</p>
                 {% endif %}
 
-                <p><small>Опубликовано: {{ question.pub_date|date:"d.m.Y H:i" }}</small></p>
+                <div style="font-size: 13px; color: #888; margin: 10px 0;">
+                    <div>Опубликован: {{ question.pub_date|date:"d.m.Y" }}</div>
+                    {% if question.end_date %}
+                        <div>До: {{ question.end_date|date:"d.m.Y" }}</div>
+                    {% endif %}
+                </div>
 
-                {% if question.end_date %}
-                    <p><small>Завершится: {{ question.end_date|date:"d.m.Y H:i" }}</small></p>
-                {% endif %}
-
-                <p>
-                    <a href="{% url 'polls:detail' question.id %}" style="background:#3498db; color:white; padding:8px 15px; text-decoration:none; border-radius:3px;">
-                        Пройти опрос
-                    </a>
-                    <a href="{% url 'polls:results' question.id %}" style="background:#27ae60; color:white; padding:8px 15px; text-decoration:none; border-radius:3px; margin-left:10px;">
-                        Результаты
-                    </a>
-                </p>
+                <div style="margin-top: 15px;">
+                    <a href="{% url 'polls:detail' question.id %}" class="btn">Пройти опрос</a>
+                    <a href="{% url 'polls:results' question.id %}" class="btn btn-secondary">Результаты</a>
+                </div>
             </div>
         {% endfor %}
-    </div>
-{% else %}
-    <p>На данный момент нет активных опросов.</p>
-{% endif %}
+    {% else %}
+        <p>Пока нет активных опросов.</p>
+    {% endif %}
+</div>
 
 {% if user.is_authenticated %}
-    <div style="margin-top:30px; padding:15px; background:#f8f9fa; border-radius:5px;">
-        <p>Вы вошли как: <strong>{{ user.username }}</strong></p>
-        <a href="{% url 'polls:profile' %}">Перейти в профиль</a>
-    </div>
+<div class="card" style="background: #f8f9fa;">
+    <h3 style="margin-top: 0;">Ваш профиль</h3>
+    <p>Вы вошли как: <strong>{{ user.username }}</strong></p>
+    <a href="{% url 'polls:profile' %}" class="btn">Перейти в профиль</a>
+</div>
 {% endif %}
 {% endblock %}

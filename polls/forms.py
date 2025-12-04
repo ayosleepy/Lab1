@@ -20,13 +20,15 @@ class UserRegisterForm(UserCreationForm):
 
     def save(self, commit=True):
         # Сохраняем пользователя
-        user = super().save(commit=commit)
+        user = super().save(commit=False)
 
         # Получаем загруженный аватар
         avatar = self.cleaned_data.get('avatar')
 
-        # Создаем профиль с аватаром
-        UserProfile.objects.create(user=user, avatar=avatar)
+        if commit:
+            user.save()
+            # Создаем профиль с аватаром
+            UserProfile.objects.create(user=user, avatar=avatar)
 
         return user
 

@@ -78,14 +78,3 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return f'Профиль {self.user.username}'
-
-
-# Сигнал для сохранения профиля при сохранении пользователя
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    # Сохраняем профиль, если он существует
-    try:
-        instance.userprofile.save()
-    except UserProfile.DoesNotExist:
-        # Профиль будет создан при первом обращении через get_or_create в views.py
-        pass

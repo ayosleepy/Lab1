@@ -1,6 +1,15 @@
 {% extends 'polls/base.html' %}
 
 {% block content %}
-<h2>Вы успешно вышли из системы</h2>
-<p><a href="{% url 'polls:login' %}">Войти снова</a></p>
+<div class="card">
+    <h2 style="margin-top: 0;">Выход из системы</h2>
+
+    <div style="text-align: center; padding: 30px 0;">
+        <p style="font-size: 18px; margin-bottom: 20px;">Вы успешно вышли из системы.</p>
+        <div style="display: flex; gap: 10px; justify-content: center;">
+            <a href="{% url 'polls:login' %}" class="btn">Войти снова</a>
+            <a href="{% url 'polls:index' %}" class="btn btn-secondary">На главную</a>
+        </div>
+    </div>
+</div>
 {% endblock %}

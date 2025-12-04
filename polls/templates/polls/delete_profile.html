@@ -1,16 +1,29 @@
 {% extends 'polls/base.html' %}
 
 {% block content %}
-<h2>Удаление профиля</h2>
-<p>Вы уверены, что хотите удалить свой профиль? Это действие невозможно отменить.</p>
+<div class="card">
+    <h2 style="color: #dc3545; margin-top: 0;">Удаление профиля</h2>
 
-<form method="post">
-    {% csrf_token %}
-    <button type="submit" style="background:#dc3545; color:white; padding:10px 20px; border:none; border-radius:3px; cursor:pointer;">
-        Да, удалить мой профиль
-    </button>
-    <a href="{% url 'polls:profile' %}" style="background:#6c757d; color:white; padding:10px 20px; text-decoration:none; border-radius:3px; margin-left:10px;">
-        Отмена
-    </a>
-</form>
+    <div style="background: #f8d7da; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+        <p style="color: #721c24; font-weight: bold; margin: 0;">
+            Внимание! Это действие нельзя отменить.
+        </p>
+    </div>
+
+    <p>Вы уверены, что хотите удалить свой профиль?</p>
+    <p>Будет удалено:</p>
+    <ul>
+        <li>Ваш аккаунт</li>
+        <li>Все ваши данные</li>
+        <li>История голосований</li>
+    </ul>
+
+    <form method="POST">
+        {% csrf_token %}
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <button type="submit" class="btn" style="background: #dc3545;">Да, удалить мой профиль</button>
+            <a href="{% url 'polls:profile' %}" class="btn btn-secondary">Отмена</a>
+        </div>
+    </form>
+</div>
 {% endblock %}

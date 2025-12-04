@@ -1,51 +1,52 @@
 {% extends 'polls/base.html' %}
 
 {% block content %}
-<h2>Профиль пользователя {{ user.username }}</h2>
+<div class="card">
+    <h2 style="margin-top: 0;">Профиль пользователя {{ user.username }}</h2>
 
-{% if user_profile.avatar %}
-    <div style="margin: 15px 0;">
-        <p><strong>Текущий аватар:</strong></p>
-        <img src="{{ user_profile.avatar.url }}" width="150" style="border-radius: 50%;">
-    </div>
-{% endif %}
+    {% if user_profile.avatar %}
+        <div style="text-align: center; margin-bottom: 20px;">
+            <img src="{{ user_profile.avatar.url }}" class="avatar-img" alt="Аватар">
+        </div>
+    {% endif %}
 
-<form method="POST" enctype="multipart/form-data" style="margin: 20px 0;">
-    {% csrf_token %}
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
 
-    <div style="background: #f5f5f5; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
-        <h3>Основные данные</h3>
-        {{ user_form.as_p }}
-    </div>
+        <div class="card" style="background: #f8f9fa; margin-bottom: 20px;">
+            <h3 style="margin-top: 0;">Основные данные</h3>
+            {% for field in user_form %}
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; font-weight: bold; margin-bottom: 5px;">
+                        {{ field.label }}
+                    </label>
+                    {{ field }}
+                </div>
+            {% endfor %}
+        </div>
 
-    <div style="background: #f5f5f5; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
-        <h3>Профиль</h3>
-        {{ profile_form.as_p }}
-    </div>
+        <div class="card" style="background: #f8f9fa; margin-bottom: 20px;">
+            <h3 style="margin-top: 0;">Дополнительная информация</h3>
+            {% for field in profile_form %}
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; font-weight: bold; margin-bottom: 5px;">
+                        {{ field.label }}
+                    </label>
+                    {{ field }}
+                </div>
+            {% endfor %}
+        </div>
 
-    <button type="submit" style="background: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">
-        Сохранить изменения
-    </button>
-    <a href="{% url 'polls:index' %}" style="padding: 10px 20px; margin-left: 10px;">Отмена</a>
-</form>
-
-<hr style="margin: 30px 0;">
-
-<div style="background: #ffe6e6; padding: 15px; border-radius: 5px;">
-    <h3 style="color: #b30000;">Удаление профиля</h3>
-    <p>Внимание: это действие нельзя отменить.</p>
-    <a href="{% url 'polls:delete_profile' %}" style="background: #b30000; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; display: inline-block; margin-top: 10px;">
-        Удалить профиль
-    </a>
+        <div style="display: flex; gap: 10px;">
+            <button type="submit" class="btn btn-success">Сохранить изменения</button>
+            <a href="{% url 'polls:index' %}" class="btn btn-secondary">Отмена</a>
+        </div>
+    </form>
 </div>
 
-{% if messages %}
-    <div style="margin-top: 20px;">
-        {% for message in messages %}
-            <div style="background: #d4edda; color: #155724; padding: 10px; border-radius: 4px; margin: 10px 0;">
-                {{ message }}
-            </div>
-        {% endfor %}
-    </div>
-{% endif %}
+<div class="card" style="background: #f8d7da; border-color: #f5c6cb;">
+    <h3 style="color: #721c24; margin-top: 0;">Опасная зона</h3>
+    <p style="color: #721c24;">Удаление аккаунта нельзя отменить.</p>
+    <a href="{% url 'polls:delete_profile' %}" class="btn" style="background: #dc3545;">Удалить профиль</a>
+</div>
 {% endblock %}
